@@ -1,9 +1,5 @@
 package Entidade;
 
-/**
- * Criado por Kauê.
- * Data: 15/04/2014.
- */
 public class Pagina {
     private String Url;
     private int TempoCarregamento;

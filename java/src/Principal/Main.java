@@ -8,25 +8,7 @@ import java.util.regex.Pattern;
 public class Main {
 
     public static void main(String[] args) {
-        //Obter HMTL Google
-        String html = Comum.Funcao.socketRequest("http://www.pucsp.br/home");
-        List<String> listaScripts = new ArrayList<String>();
-        for (String s : html.split(Pattern.quote("<script")))
-        {
-            try{
-                s = s.split(Pattern.quote("</script>"))[0];
-                s = s.split(Pattern.quote("src=\""))[1];
-                s = s.split(Pattern.quote("\""))[0];
-                listaScripts.add(s);
-            }catch (Exception ex){
-
-            }
-        };
-        for (String script : listaScripts) {
-            Tela.Console.mostrarMensagem(script);
-        };
-
-        //Mostrar HTML Tela
-        //Tela.Console.mostrarMensagem(html);
+        Controle controle = new Controle("http://www.stackoverflow.com", 3);
+        controle.IniciarCaptura();
     }
 }
