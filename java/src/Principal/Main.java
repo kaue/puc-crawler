@@ -9,12 +9,12 @@ public class Main {
 
     public static void main(String[] args) {
         //Obter HMTL Google
-        String html = Comum.Funcao.obterHTML("https://github.com/");
+        String html = Comum.Funcao.socketRequest("pucsp.br");
+        Tela.Console.mostrarMensagem(html);
         List<String> listaScripts = new ArrayList<String>();
         for (String s : html.split(Pattern.quote("<script")))
         {
             try{
-                
                 s = s.split(Pattern.quote("</script>"))[0];
                 s = s.split(Pattern.quote("src=\""))[1];
                 s = s.split(Pattern.quote("\""))[0];
