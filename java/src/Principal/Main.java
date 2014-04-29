@@ -9,8 +9,7 @@ public class Main {
 
     public static void main(String[] args) {
         //Obter HMTL Google
-        String html = Comum.Funcao.socketRequest("pucsp.br");
-        Tela.Console.mostrarMensagem(html);
+        String html = Comum.Funcao.socketRequest("http://www.pucsp.br/asd/bcd/");
         List<String> listaScripts = new ArrayList<String>();
         for (String s : html.split(Pattern.quote("<script")))
         {

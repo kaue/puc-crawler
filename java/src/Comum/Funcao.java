@@ -61,15 +61,31 @@ public class Funcao {
     
    public static String socketRequest(String lUrl){
        //String data = URLEncoder.encode("key1", "UTF-8") + "=" + URLEncoder.encode("value1", "UTF-8");
+       
+       //Adicionar http:// caso não exista.
+       if(!lUrl.startsWith("http://") | !lUrl.startsWith("http://")){
+           lUrl = "http://" + lUrl;
+       }
+       
+       System.out.println(lUrl.indexOf("://"));
+       //4
+       //lUrl = lUrl.replace("http://", "");
+       //lUrl = lUrl.replace("https://", "");
+       
+       String requestDomain = lUrl;
+       String requestPath = "";
        String result = "";
        try {
-           Socket socket = new Socket(InetAddress.getByName(lUrl), 80);
-
-
+           Socket socket = new Socket(InetAddress.getByName(lUrl).getHostAddress(), 80);
            BufferedWriter wr = new BufferedWriter(new OutputStreamWriter(socket.getOutputStream(), "UTF8"));
-           wr.write("GET HTTP/1.0\r\n");
+           //Method
+           wr.write("GET /home HTTP/1.1\r\n");
+           //Post Data
            //wr.write("Content-Length: " + data.length() + "\r\n");
+           //Host
+           wr.write("Host: " + requestDomain + "\r\n");
            wr.write("Content-Type: application/x-www-form-urlencoded\r\n");
+           wr.write("Accept: text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8\r\n");
            wr.write("\r\n");
            //wr.write(data);
            wr.flush();
