@@ -12,10 +12,7 @@ import java.net.URL;
 import java.net.Socket;
 import java.io.PrintWriter;
 import java.net.InetAddress;
-/**
- * Criado por g0.
- * Data: 15/04/2014.
- */
+
 public class Funcao {
     public static String obterHTML(String urlToRead) {
         URL url;
@@ -38,48 +35,36 @@ public class Funcao {
         return result;
     }
     
-    public static String socketGet(String lUrl){
-        String textoResposta = "";
-        try {
-            //Criar novo Socket utilizando lUrl na porta 80
-            Socket socket = new Socket(InetAddress.getByName(lUrl), 80);
-            //Criar Request GET
-            PrintWriter printWriter = new PrintWriter(socket.getOutputStream());
-            printWriter.println("GET / HTTP/1.1");
-            printWriter.println("Host: " + lUrl);
-            printWriter.println("");
-            printWriter.flush();
-            BufferedReader br = new BufferedReader(new InputStreamReader(socket.getInputStream()));
-            //Retornar Resposta
-            while((textoResposta = br.readLine()) != null);
-            br.close();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        return textoResposta;
-    }
     
    public static String socketRequest(String lUrl){
-       //String data = URLEncoder.encode("key1", "UTF-8") + "=" + URLEncoder.encode("value1", "UTF-8");
-       
-       //Adicionar http:// caso não exista.
-       if(!lUrl.startsWith("http://") | !lUrl.startsWith("http://")){
-           lUrl = "http://" + lUrl;
-       }
-       
-       System.out.println(lUrl.indexOf("://"));
-       //4
-       //lUrl = lUrl.replace("http://", "");
-       //lUrl = lUrl.replace("https://", "");
-       
-       String requestDomain = lUrl;
+       String requestUrl = "";
+       String requestDomain = "";
        String requestPath = "";
+
+       //Adicionar '/' no final da url
+       if(!lUrl.endsWith("/")){
+           lUrl = lUrl + "/";
+       }
+       requestUrl = lUrl;
+       //Remover 'http://' e 'https://' da url
+       lUrl = lUrl.replace("http://", "");
+       lUrl = lUrl.replace("https://", "");
+       
+       int posDivisao = lUrl.indexOf("/");
+       
+       //Obter dominio
+       requestDomain = lUrl.substring(0, posDivisao);
+       //Obter caminho
+       requestPath = lUrl.substring(posDivisao, lUrl.length());
+       System.out.println(requestPath);
+      
        String result = "";
        try {
-           Socket socket = new Socket(InetAddress.getByName(lUrl).getHostAddress(), 80);
+            System.out.println(InetAddress.getByName(requestDomain).getHostAddress());
+           Socket socket = new Socket(InetAddress.getByName(requestDomain).getHostAddress(), 80);
            BufferedWriter wr = new BufferedWriter(new OutputStreamWriter(socket.getOutputStream(), "UTF8"));
            //Method
-           wr.write("GET /home HTTP/1.1\r\n");
+           wr.write("GET " + requestPath + " HTTP/1.1\r\n");
            //Post Data
            //wr.write("Content-Length: " + data.length() + "\r\n");
            //Host
@@ -101,7 +86,7 @@ public class Funcao {
        } catch (IOException e) {
            e.printStackTrace();
        }
-
+        //String data = URLEncoder.encode("key1", "UTF-8") + "=" + URLEncoder.encode("value1", "UTF-8");
 
        return result;
    }

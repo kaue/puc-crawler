@@ -7,7 +7,7 @@ package Entidade;
 public class Pagina {
     private String Url;
     private int TempoCarregamento;
-
+    
     public int getTempoCarregamento() {
         return TempoCarregamento;
     }
