@@ -12,7 +12,7 @@ public class Main {
         Tela.Console.mostrarMensagem("--------------------INICIANDO ROBO--------------------"); 
         try{
             Captura captura = new Captura("http://www.pucsp.br/home", 3);
-            captura.IniciarCaptura();    
+            captura.Iniciar();    
         }catch (Exception ex){
             
         }

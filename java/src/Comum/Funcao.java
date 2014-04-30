@@ -1,5 +1,7 @@
 package Comum;
 
+import Entidade.*;
+
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.IOException;
@@ -37,48 +39,51 @@ public class Funcao {
     }
     
     
-   public static String socketRequest(String lUrl){
-       String requestUrl = "";
-       String requestDomain = "";
-       String requestPath = "";
-     
-      
-       String result = "";
-       try {
-           URL myUrl = new URL(lUrl);
-           //Obter dominio
-           requestDomain = myUrl.getHost();
-           //Obter caminho
-           requestPath = myUrl.getPath();
-                      
-           Socket socket = new Socket(InetAddress.getByName(requestDomain).getHostAddress(), 80);
-           BufferedWriter wr = new BufferedWriter(new OutputStreamWriter(socket.getOutputStream(), "UTF8"));
-           //Method
-           wr.write("GET " + requestPath + " HTTP/1.1\r\n");
-           //Post Data
-           //wr.write("Content-Length: " + data.length() + "\r\n");
-           //Host
-           wr.write("Host: " + requestDomain + "\r\n");
-           wr.write("Content-Type: application/x-www-form-urlencoded\r\n");
-           wr.write("Accept: text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8\r\n");
-           wr.write("\r\n");
-           //wr.write(data);
-           wr.flush();
+    public static Solicitacao socketRequest(String lUrl){
+        String requestUrl = "";
+        String requestDomain = "";
+        String requestPath = "";
+        //Obter tempo de inicio para calcular o tempo de carregamento
+        long startTime = System.nanoTime();
+        String result = "";
+        try {
 
-           BufferedReader rd = new BufferedReader(new InputStreamReader(socket.getInputStream()));
+            URL myUrl = new URL(lUrl);
+            //Obter dominio
+            requestDomain = myUrl.getHost();
+            //Obter caminho
+            requestPath = myUrl.getPath();
 
-           String line;
-           while ((line = rd.readLine()) != null) {
-               result += line;
-           }
-           wr.close();
-           rd.close();
-       } catch (IOException e) {
-           e.printStackTrace();
-       }
-       //String data = URLEncoder.encode("key1", "UTF-8") + "=" + URLEncoder.encode("value1", "UTF-8");
+            Socket socket = new Socket(InetAddress.getByName(requestDomain).getHostAddress(), 80);
+            BufferedWriter wr = new BufferedWriter(new OutputStreamWriter(socket.getOutputStream(), "UTF8"));
+            //Method
+            wr.write("GET " + requestPath + " HTTP/1.1\r\n");
+            //Post Data
+            //wr.write("Content-Length: " + data.length() + "\r\n");
+            //Host
+            wr.write("Host: " + requestDomain + "\r\n");
+            wr.write("Content-Type: application/x-www-form-urlencoded\r\n");
+            wr.write("Accept: text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8\r\n");
+            wr.write("\r\n");
+            //wr.write(data);
+            wr.flush();
 
-       return result;
-   }
+            BufferedReader rd = new BufferedReader(new InputStreamReader(socket.getInputStream()));
+
+            String line;
+            while ((line = rd.readLine()) != null) {
+                result += line;
+            }
+            wr.close();
+            rd.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        //String data = URLEncoder.encode("key1", "UTF-8") + "=" + URLEncoder.encode("value1", "UTF-8");
+        
+        long endTime = System.nanoTime();
+        long duration = endTime - startTime;
+        return new Solicitacao(result, duration);
+    }
 
 }
