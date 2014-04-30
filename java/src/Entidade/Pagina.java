@@ -3,6 +3,9 @@ package Entidade;
 public class Pagina {
     private String Url;
     private int TempoCarregamento;
+    public Pagina(String lUrl){
+        this.Url = lUrl;
+    }
     
     public int getTempoCarregamento() {
         return TempoCarregamento;

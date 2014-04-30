@@ -12,6 +12,7 @@ import java.net.URL;
 import java.net.Socket;
 import java.io.PrintWriter;
 import java.net.InetAddress;
+import java.net.URL;
 
 public class Funcao {
     public static String obterHTML(String urlToRead) {
@@ -40,27 +41,16 @@ public class Funcao {
        String requestUrl = "";
        String requestDomain = "";
        String requestPath = "";
-
-       //Adicionar '/' no final da url
-       if(!lUrl.endsWith("/")){
-           lUrl = lUrl + "/";
-       }
-       requestUrl = lUrl;
-       //Remover 'http://' e 'https://' da url
-       lUrl = lUrl.replace("http://", "");
-       lUrl = lUrl.replace("https://", "");
-       
-       int posDivisao = lUrl.indexOf("/");
-       
-       //Obter dominio
-       requestDomain = lUrl.substring(0, posDivisao);
-       //Obter caminho
-       requestPath = lUrl.substring(posDivisao, lUrl.length());
-       System.out.println(requestPath);
+     
       
        String result = "";
        try {
-            System.out.println(InetAddress.getByName(requestDomain).getHostAddress());
+           URL myUrl = new URL(lUrl);
+           //Obter dominio
+           requestDomain = myUrl.getHost();
+           //Obter caminho
+           requestPath = myUrl.getPath();
+                      
            Socket socket = new Socket(InetAddress.getByName(requestDomain).getHostAddress(), 80);
            BufferedWriter wr = new BufferedWriter(new OutputStreamWriter(socket.getOutputStream(), "UTF8"));
            //Method
@@ -86,7 +76,7 @@ public class Funcao {
        } catch (IOException e) {
            e.printStackTrace();
        }
-        //String data = URLEncoder.encode("key1", "UTF-8") + "=" + URLEncoder.encode("value1", "UTF-8");
+       //String data = URLEncoder.encode("key1", "UTF-8") + "=" + URLEncoder.encode("value1", "UTF-8");
 
        return result;
    }
