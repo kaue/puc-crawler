@@ -1,10 +1,13 @@
 TODO
-    .Caso href='' e href=""
-    .Sub paginas repetidas 'www.test.com/asd' == 'www.test.com/asd/'
+    .Caso href='' e href=""    
     .Integrar Java <-> PHP
         Listar arquivos
     .Encontrar Solucoes
-    
+
+RESOLVIDOS
+Sub paginas repetidas 'www.test.com/asd' == 'www.test.com/asd/'
+
+
 Possiveis Solucoes
     .Comentario
     .Espaco em branco 
@@ -21,3 +24,5 @@ Possiveis Solucoes
 //SCRIPT DIRECT
 *<script type="text/javascript"></script>
 *<script></script>
+
+

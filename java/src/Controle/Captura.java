@@ -49,9 +49,11 @@ public class Captura {
                         if(strLink.startsWith("#")){
                             continue;
                         }
+                        if(strLink.endsWith("/")){
+                            strLink = strLink.substring(0,strLink.length()-1);
+                        }
+                        
                         if(!strLink.startsWith("http") && !strLink.startsWith("https")){
-                            if(!strLink.startsWith("/"))
-                                strLink = "/" + strLink;
                             strLink = "http://" + mainUrl.getHost() + strLink;
                             Tela.Console.mostrarMensagem("Novo Link= " + strLink);
                         }
@@ -63,7 +65,7 @@ public class Captura {
                             if(!listaSubPaginas.contains(pag)){
                                 //Adicionar pagina a lista
                                 listaSubPaginas.add(pag);
-                                Tela.Console.mostrarMensagem(strLink);
+                                Tela.Console.mostrarMensagem("Link Adicionado = " + strLink);
                             }
                         }
                     }catch (Exception ex){

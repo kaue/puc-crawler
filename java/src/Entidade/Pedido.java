@@ -4,7 +4,7 @@ public class Pedido {
     private String Dominio;
     private int Nivel;
     
-    public Solicitacao(String lDominio, int lNivel){
+    public Pedido(String lDominio, int lNivel){
         this.Dominio = lDominio;
         this.Nivel = lNivel;
     }
@@ -17,7 +17,7 @@ public class Pedido {
     }
 
     public String getDominio() {
-        return Html;
+        return Dominio;
     }
 
     public void setDominio(String dominio) {

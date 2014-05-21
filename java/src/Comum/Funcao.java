@@ -83,6 +83,7 @@ public class Funcao {
         
         long endTime = System.nanoTime();
         long duration = endTime - startTime;
+        duration = TimeUnit.SECONDS.convert(duration, TimeUnit.NANOSECONDS);
         return new Solicitacao(result, duration);
     }
 

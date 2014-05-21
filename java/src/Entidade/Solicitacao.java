@@ -17,10 +17,10 @@ public class Solicitacao {
     }
 
     public String getHtml() {
-        return Html;
+        return this.Html;
     }
 
     public void setHtml(String html) {
-        Html = html;
+        this.Html = html;
     }
 }
