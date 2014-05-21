@@ -23,4 +23,6 @@ public class Solicitacao {
     public void setHtml(String html) {
         this.Html = html;
     }
+    
+    
 }

@@ -39,6 +39,8 @@ public class Captura {
                 Tela.Console.mostrarMensagem("--Pagina Atual = " + pagina.getUrl());
                 Solicitacao solicitacao = Comum.Funcao.socketRequest(pagina.getUrl());
                 Tela.Console.mostrarMensagem("Tempo Carregamneto = " + solicitacao.getTempoCarregamento());
+                //Obter lista de recursos para pagina atual
+                ObterRecursos(solicitacao,pagina);
                 //Obter 'href' da tag '<a>'
                 for (String strLink : solicitacao.getHtml().split(Pattern.quote("<a")))
                 {
@@ -46,16 +48,26 @@ public class Captura {
                         strLink = strLink.split(Pattern.quote("</a>"))[0];
                         strLink = strLink.split(Pattern.quote("href=\""))[1];
                         strLink = strLink.split(Pattern.quote("\""))[0];
+                        strLink = strLink.trim();
+                        //Validar link                   
                         if(strLink.startsWith("#")){
+                            continue;
+                        }
+                        if(strLink.endsWith("favicon.ico")){
                             continue;
                         }
                         if(strLink.endsWith("/")){
                             strLink = strLink.substring(0,strLink.length()-1);
                         }
-                        
+                        if(strLink.isEmpty()){
+                            continue;
+                        }
                         if(!strLink.startsWith("http") && !strLink.startsWith("https")){
+                            Tela.Console.mostrarMensagem("Link antes = " + strLink);
+                            if(!strLink.startsWith("/"))
+                                strLink = "/" + strLink;
                             strLink = "http://" + mainUrl.getHost() + strLink;
-                            Tela.Console.mostrarMensagem("Novo Link= " + strLink);
+                            Tela.Console.mostrarMensagem("Link depois = " + strLink);
                         }
                         
                         //Verificar se está no mesmo dominio
@@ -65,12 +77,12 @@ public class Captura {
                             if(!listaSubPaginas.contains(pag)){
                                 //Adicionar pagina a lista
                                 listaSubPaginas.add(pag);
-                                Tela.Console.mostrarMensagem("Link Adicionado = " + strLink);
+                                //Tela.Console.mostrarMensagem("Link Adicionado = " + strLink);
                             }
                         }
                     }catch (Exception ex){
                         Tela.Console.mostrarMensagem("Erro <a:" + strLink);
-                        //ex.printStackTrace();
+                        ex.printStackTrace();
                     }
                 };
             }
@@ -78,16 +90,19 @@ public class Captura {
             //Adicionar a lista principal
             for (Pagina pagina : listaSubPaginas) {
                 if(!ListaPaginas.contains(pagina)){
-                    //Obter lista de recursos para pagina atual
-                    ObterRecursos(pagina);
                     ListaPaginas.add(pagina);
                 }
             };
         }
+        //Terminou
+        for (Pagina recurso : ListaRecursos) {
+            //Obter Tempo Carregamento
+            //Possiveis solucoes
+        }
     }
     
-    private void ObterRecursos(Pagina lPagina){
-        Solicitacao solicitacao = Comum.Funcao.socketRequest(lPagina.getUrl());
+    private void ObterRecursos(Solicitacao lSolicitacao, Pagina lPagina){
+        Solicitacao solicitacao = lSolicitacao;
         //Obter <script src="URL"> </script>
         for (String strScript : solicitacao.getHtml().split(Pattern.quote("<script")))
         {
@@ -96,10 +111,10 @@ public class Captura {
                 if(strScript.contains("src=")){
                     strScript = strScript.split(Pattern.quote("src=\""))[1];
                     strScript = strScript.split(Pattern.quote("\""))[0];
-                    Recurso recurso = new Recurso(strScript, "Script", solicitacao.getTempoCarregamento(), lPagina);
+                    Recurso recurso = new Recurso(strScript, "Script", lPagina);
                     if(!ListaRecursos.contains(recurso)){
                         ListaRecursos.add(recurso);
-                        //Tela.Console.mostrarMensagem(strScript);
+                        Tela.Console.mostrarMensagem("Script= " + strScript);
                     }
                 }else{
                     //Script Direto (sem url/src)
@@ -119,10 +134,10 @@ public class Captura {
                     //Filtrar apenas arquivos CSS
                     if(!strLink.contains(".css"))
                         continue;
-                    Recurso recurso = new Recurso(strLink, "Style", solicitacao.getTempoCarregamento(), lPagina);
+                    Recurso recurso = new Recurso(strLink, "Style", lPagina);
                     if(!ListaRecursos.contains(recurso)){
                         ListaRecursos.add(recurso);
-                        Tela.Console.mostrarMensagem("link= " + strLink);
+                        Tela.Console.mostrarMensagem("Style= " + strLink);
                     }
                 }
             }catch (Exception ex){
@@ -140,7 +155,7 @@ public class Captura {
                     //Filtrar apenas arquivos CSS
                     if(!strStyle.contains(".css"))
                         continue;
-                    Recurso recurso = new Recurso(strStyle, "Style", solicitacao.getTempoCarregamento(), lPagina);
+                    Recurso recurso = new Recurso(strStyle, "Style", lPagina);
                     if(!ListaRecursos.contains(recurso)){
                         ListaRecursos.add(recurso);
                         Tela.Console.mostrarMensagem("Style= " +strStyle);
