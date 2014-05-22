@@ -6,7 +6,10 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.regex.Pattern;
 import java.net.URI;
+import java.util.regex.Matcher;
 import java.io.IOException;
+
+
 public class Captura {
     private String CapturaUrl;
     private int CapturaNivel;
@@ -19,6 +22,8 @@ public class Captura {
     }
    
     public void Iniciar() throws IOException {
+        //===========
+        //Url Inicial
         URI mainUrl = null;
         try{mainUrl = new URI(CapturaUrl);}catch(Exception ex){
             return;
@@ -26,21 +31,25 @@ public class Captura {
 
         List<Pagina> listaSubPaginas = new ArrayList<Pagina>();
         List<Pagina> listaSubPaginasAux = new ArrayList<Pagina>();
-        
+        //=========================
         //Verificar todos os niveis
         for(int i=0; i<= CapturaNivel; i++){
-            //Obter os links/subPaginas das SubPaginas
             listaSubPaginasAux = listaSubPaginas;
             listaSubPaginas = new ArrayList<Pagina>();
+            //==============
             //Primeiro Nivel
             if(i == 0)
                 listaSubPaginasAux.add(new Pagina(CapturaUrl));
+            //========================================
+            //Obter os links/subPaginas das SubPaginas
             for (Pagina pagina : listaSubPaginasAux) {
                 Tela.Console.mostrarMensagem("--Pagina Atual = " + pagina.getUrl());
                 Solicitacao solicitacao = Comum.Funcao.socketRequest(pagina.getUrl());
                 Tela.Console.mostrarMensagem("Tempo Carregamneto = " + solicitacao.getTempoCarregamento());
+                //=========================================
                 //Obter lista de recursos para pagina atual
                 ObterRecursos(solicitacao,pagina);
+                //=========================
                 //Obter 'href' da tag '<a>'
                 for (String strLink : solicitacao.getHtml().split(Pattern.quote("<a")))
                 {
@@ -49,40 +58,28 @@ public class Captura {
                         strLink = strLink.split(Pattern.quote("href=\""))[1];
                         strLink = strLink.split(Pattern.quote("\""))[0];
                         strLink = strLink.trim();
-                        //Validar link                   
-                        if(strLink.startsWith("#")){
+                        //===========
+                        //Validar Url
+                        if(!Url.Validar(strLink))
                             continue;
-                        }
-                        if(strLink.endsWith("favicon.ico")){
-                            continue;
-                        }
-                        if(strLink.endsWith("/")){
-                            strLink = strLink.substring(0,strLink.length()-1);
-                        }
-                        if(strLink.isEmpty()){
-                            continue;
-                        }
-                        if(!strLink.startsWith("http") && !strLink.startsWith("https")){
-                            Tela.Console.mostrarMensagem("Link antes = " + strLink);
-                            if(!strLink.startsWith("/"))
-                                strLink = "/" + strLink;
-                            strLink = "http://" + mainUrl.getHost() + strLink;
-                            Tela.Console.mostrarMensagem("Link depois = " + strLink);
-                        }
-                        
+                        //==============
+                        //Estruturar Url
+                        strLink = Url.Estruturar(strLink, mainUrl);
+                        //==================================
                         //Verificar se está no mesmo dominio
                         URI curUrl = new URI(strLink);
                         if(curUrl.getHost().equals(mainUrl.getHost())){
                             Pagina pag = new Pagina(strLink, solicitacao.getTempoCarregamento());
                             if(!listaSubPaginas.contains(pag)){
+                                //========================
                                 //Adicionar pagina a lista
                                 listaSubPaginas.add(pag);
                                 //Tela.Console.mostrarMensagem("Link Adicionado = " + strLink);
                             }
                         }
                     }catch (Exception ex){
-                        Tela.Console.mostrarMensagem("Erro <a:" + strLink);
-                        ex.printStackTrace();
+                        //Tela.Console.mostrarMensagem("Erro <a:" + strLink);
+                        //ex.printStackTrace();
                     }
                 };
             }
@@ -95,14 +92,43 @@ public class Captura {
             };
         }
         //Terminou
-        for (Pagina recurso : ListaRecursos) {
-            //Obter Tempo Carregamento
-            //Possiveis solucoes
+        for (Recurso recurso : ListaRecursos) {
+            //Obter Dados do Recurso
+            //recurso = ObterInformacao(recurso);
         }
     }
     
+    
+    private Recurso ObterInformacao(Recurso lRecurso){
+        Recurso recursoRetorno = lRecurso;
+        if(!lRecurso.getUrl().startsWith("http://www.pucsp.br/sites/all/themes/puc/js/scripts.js"))
+            return recursoRetorno;
+        Solicitacao solicitacao = Comum.Funcao.socketRequest(lRecurso.getUrl());
+        
+        //============================
+        //Atualizar tempo carregamento
+        recursoRetorno.setTempoCarregamento(solicitacao.getTempoCarregamento());
+        
+   
+        int tamanhoArquivo = 0;
+        int qtdCaracteres = 0;                                   //(?:\/\*(?:[\s\S]*?)\*\/)|(?:([\s;])+\/\/(?:.*)$)
+        //====================================
+        //Remover todos comentarios do arquivo
+        String semComentarios = solicitacao.getHtml().replaceAll("/(?:\\/\\*(?:[\\s\\S]*?)\\*\\/)|(?:([\\s;])+\\/\\/(?:.*)$)", ""); //.replaceAll("(?:/\\*(?:[^*]|(?:\\*+[^*/]))*\\*+/)|(?://.*)","");        
+        //=================================================
+        //Contar tamanho do arquivo e quantidade caracteres
+        tamanhoArquivo = solicitacao.getHtml().getBytes().length - semComentarios.getBytes().length;
+        qtdCaracteres = solicitacao.getHtml().length() - semComentarios.length();
+        //debug        
+        Tela.Console.mostrarMensagem(semComentarios);
+        Tela.Console.mostrarMensagem("qtdCaracteres = " + qtdCaracteres + " Num kbs = " + tamanhoArquivo/1024);
+        return recursoRetorno;
+    }
+    
+    
     private void ObterRecursos(Solicitacao lSolicitacao, Pagina lPagina){
         Solicitacao solicitacao = lSolicitacao;
+        //==================================
         //Obter <script src="URL"> </script>
         for (String strScript : solicitacao.getHtml().split(Pattern.quote("<script")))
         {
@@ -113,6 +139,7 @@ public class Captura {
                     strScript = strScript.split(Pattern.quote("\""))[0];
                     Recurso recurso = new Recurso(strScript, "Script", lPagina);
                     if(!ListaRecursos.contains(recurso)){
+                        ObterInformacao(recurso);
                         ListaRecursos.add(recurso);
                         Tela.Console.mostrarMensagem("Script= " + strScript);
                     }
@@ -123,6 +150,7 @@ public class Captura {
                 Tela.Console.mostrarMensagem("Erro <script:" + strScript);
             }
         };
+        //========================================================================
         //Obter 'href' da tag '<link rel="stylesheet" type="text/css" href="URL">'
         for (String strLink : solicitacao.getHtml().split(Pattern.quote("<link")))
         {
@@ -131,11 +159,13 @@ public class Captura {
                 if(strLink.contains("href=")){
                     strLink = strLink.split(Pattern.quote("href=\""))[1];
                     strLink = strLink.split(Pattern.quote("\""))[0];
+                    //===========================
                     //Filtrar apenas arquivos CSS
                     if(!strLink.contains(".css"))
                         continue;
                     Recurso recurso = new Recurso(strLink, "Style", lPagina);
                     if(!ListaRecursos.contains(recurso)){
+                        ObterInformacao(recurso);
                         ListaRecursos.add(recurso);
                         Tela.Console.mostrarMensagem("Style= " + strLink);
                     }
@@ -144,6 +174,7 @@ public class Captura {
                 Tela.Console.mostrarMensagem("Erro <link:" + strLink);
             }
         };
+        //==============================================
         //Obter 'src' da tag '<style src="URL"></style>'
         for (String strStyle : solicitacao.getHtml().split(Pattern.quote("<style")))
         {
@@ -152,11 +183,13 @@ public class Captura {
                 if(strStyle.contains("src=")){
                     strStyle = strStyle.split(Pattern.quote("src=\""))[1];
                     strStyle = strStyle.split(Pattern.quote("\""))[0];
+                    //===========================
                     //Filtrar apenas arquivos CSS
                     if(!strStyle.contains(".css"))
                         continue;
                     Recurso recurso = new Recurso(strStyle, "Style", lPagina);
                     if(!ListaRecursos.contains(recurso)){
+                        ObterInformacao(recurso);
                         ListaRecursos.add(recurso);
                         Tela.Console.mostrarMensagem("Style= " +strStyle);
                     }

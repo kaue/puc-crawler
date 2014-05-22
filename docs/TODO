@@ -4,6 +4,8 @@ TODO
         Listar arquivos
     .Obter informacao Recursos
     .Encontrar Solucoes
+    .Criar Controle para Recurso
+    .Whitelist Url (.html, .php, .aspx, etc)
 RESOLVIDOS
     .Sub paginas repetidas 'www.test.com/asd' == 'www.test.com/asd/'
     .Arrumar Tempo Carregamento 
