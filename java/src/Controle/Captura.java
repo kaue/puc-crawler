@@ -11,35 +11,33 @@ import java.io.IOException;
 
 
 public class Captura {
-    private String CapturaUrl;
-    private int CapturaNivel;
-    private List<Recurso> ListaRecursos = new ArrayList<Recurso>();
-    private List<Pagina> ListaPaginas = new ArrayList<Pagina>();
+    private Entidade.Pedido Pedido; 
+    private List<Entidade.Recurso> ListaRecursos = new ArrayList<Entidade.Recurso>();
+    private List<Entidade.Pagina> ListaPaginas = new ArrayList<Entidade.Pagina>();
     
-    public Captura(String lUrl, int lNivel) {
-        this.CapturaUrl = lUrl;
-        this.CapturaNivel = lNivel;
+    public Captura(Entidade.Pedido lPedido) {
+        this.Pedido = lPedido;
     }
    
     public void Iniciar() throws IOException {
         //===========
         //Url Inicial
         URI mainUrl = null;
-        try{mainUrl = new URI(CapturaUrl);}catch(Exception ex){
+        try{mainUrl = new URI(Pedido.getDominio());}catch(Exception ex){
             return;
         }
 
-        List<Pagina> listaSubPaginas = new ArrayList<Pagina>();
-        List<Pagina> listaSubPaginasAux = new ArrayList<Pagina>();
+        List<Entidade.Pagina> listaSubPaginas = new ArrayList<Entidade.Pagina>();
+        List<Entidade.Pagina> listaSubPaginasAux = new ArrayList<Entidade.Pagina>();
         //=========================
         //Verificar todos os niveis
-        for(int i=0; i<= CapturaNivel; i++){
+        for(int i=0; i<= Pedido.getNivel(); i++){
             listaSubPaginasAux = listaSubPaginas;
             listaSubPaginas = new ArrayList<Pagina>();
             //==============
             //Primeiro Nivel
             if(i == 0)
-                listaSubPaginasAux.add(new Pagina(CapturaUrl));
+                listaSubPaginasAux.add(new Pagina(Pedido.getDominio()));
             //========================================
             //Obter os links/subPaginas das SubPaginas
             for (Pagina pagina : listaSubPaginasAux) {
@@ -74,6 +72,7 @@ public class Captura {
                                 //========================
                                 //Adicionar pagina a lista
                                 listaSubPaginas.add(pag);
+                                //Debug
                                 //Tela.Console.mostrarMensagem("Link Adicionado = " + strLink);
                             }
                         }
@@ -92,10 +91,9 @@ public class Captura {
             };
         }
         //Terminou
-        for (Recurso recurso : ListaRecursos) {
-            //Obter Dados do Recurso
-            //recurso = ObterInformacao(recurso);
-        }
+        Tela.Console.mostrarMensagem("--Finalizou Url = " + Pedido.getDominio());
+        //Apagar xml
+        //Gerar xml resultado
     }
     
     
@@ -109,7 +107,6 @@ public class Captura {
         //Atualizar tempo carregamento
         recursoRetorno.setTempoCarregamento(solicitacao.getTempoCarregamento());
         
-   
         int tamanhoArquivo = 0;
         int qtdCaracteres = 0;                                   //(?:\/\*(?:[\s\S]*?)\*\/)|(?:([\s;])+\/\/(?:.*)$)
         //====================================
@@ -119,7 +116,7 @@ public class Captura {
         //Contar tamanho do arquivo e quantidade caracteres
         tamanhoArquivo = solicitacao.getHtml().getBytes().length - semComentarios.getBytes().length;
         qtdCaracteres = solicitacao.getHtml().length() - semComentarios.length();
-        //debug        
+        //Debug        
         Tela.Console.mostrarMensagem(semComentarios);
         Tela.Console.mostrarMensagem("qtdCaracteres = " + qtdCaracteres + " Num kbs = " + tamanhoArquivo/1024);
         return recursoRetorno;
@@ -139,6 +136,8 @@ public class Captura {
                     strScript = strScript.split(Pattern.quote("\""))[0];
                     Recurso recurso = new Recurso(strScript, "Script", lPagina);
                     if(!ListaRecursos.contains(recurso)){
+                        //==========================================
+                        //Adicionar a lista de recursos e obter info
                         ObterInformacao(recurso);
                         ListaRecursos.add(recurso);
                         Tela.Console.mostrarMensagem("Script= " + strScript);
@@ -165,6 +164,8 @@ public class Captura {
                         continue;
                     Recurso recurso = new Recurso(strLink, "Style", lPagina);
                     if(!ListaRecursos.contains(recurso)){
+                        //==========================================
+                        //Adicionar a lista de recursos e obter info
                         ObterInformacao(recurso);
                         ListaRecursos.add(recurso);
                         Tela.Console.mostrarMensagem("Style= " + strLink);
@@ -189,6 +190,8 @@ public class Captura {
                         continue;
                     Recurso recurso = new Recurso(strStyle, "Style", lPagina);
                     if(!ListaRecursos.contains(recurso)){
+                        //==========================================
+                        //Adicionar a lista de recursos e obter info
                         ObterInformacao(recurso);
                         ListaRecursos.add(recurso);
                         Tela.Console.mostrarMensagem("Style= " +strStyle);

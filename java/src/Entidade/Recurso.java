@@ -5,42 +5,53 @@ public class Recurso {
     private String Tipo;
     private Pagina PaginaMae;
     private long TempoCarregamento;
+    private int QuantidadeCaracteres;
+    private int DiferencaTamanho;
     
     public Recurso(String lUrl, String lTipo, Pagina lPaginaMae){
         this.Url = lUrl;
         this.Tipo = lTipo;
-        //this.TempoCarregamento = lTempoCarregamento;
         this.PaginaMae = lPaginaMae;
     }
-    
+    //TempoCarregamento
     public long getTempoCarregamento() {
         return TempoCarregamento;
     }
-
     public void setTempoCarregamento(long tempoCarregamento) {
         TempoCarregamento = tempoCarregamento;
     }
-
+    //Url
     public String getUrl() {
         return Url;
     }
-
     public void setUrl(String url) {
         Url = url;
     }
-    
+    //QuantidadeCaracteres
+    public int getQuantidadeCaracteres() {
+        return QuantidadeCaracteres;
+    }
+    public void setQuantidadeCaracteres(int quantidadeCaracteres) {
+        QuantidadeCaracteres = quantidadeCaracteres;
+    }
+    //DiferencaTamanho
+    public int getDiferencaTamanho() {
+        return DiferencaTamanho;
+    }
+    public void setDiferencaTamanho(int diferencaTamanho) {
+        DiferencaTamanho = diferencaTamanho;
+    }
+    //Tipo
     public String getTipo() {
         return Tipo;
     }
-
     public void setTipo(String tipo) {
         Tipo = tipo;
     }
-    
-     public Pagina getPaginaMae() {
+    //PaginaMae
+    public Pagina getPaginaMae() {
         return PaginaMae;
     }
-
     public void setPaginaMae(Pagina paginaMae) {
         PaginaMae = paginaMae;
     }
