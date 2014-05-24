@@ -60,7 +60,17 @@ public class Pedido {
     }
     
     
-    public void Apagar(String id){
-        //TODO
+    public static boolean Apagar(String id){
+        File file = new File(dirPedido + id + ".xml");
+        if(file.delete()){
+            //=========================================
+            //Foi possivel apagar o arquivo com sucesso
+            return true;
+        }else{
+            //=================================
+            //Não foi possivel apagar o arquivo
+            Tela.Console.mostrarMensagem("Ocorreu um erro ao apagar o arquivo!");
+            return false;
+        }
     }
 }

@@ -90,17 +90,24 @@ public class Captura {
                 }
             };
         }
-        //Terminou
+        //======================
+        //Finalizou pedido atual
         Tela.Console.mostrarMensagem("--Finalizou Url = " + Pedido.getDominio());
-        //Apagar xml
-        //Gerar xml resultado
+        //==================================
+        //Gerar/Salvar arquivo xml Resultado
+        Tela.Console.mostrarMensagem("Salvando arquivo resultado...");
+        Dados.Resultado dadosResultado = new Dados.Resultado(ListaRecursos, ListaPaginas, Pedido);
+        dadosResultado.Salvar();
+        //=========================
+        //Apagar arquivo xml Pedido
+        Tela.Console.mostrarMensagem("Deletando arquivo pedido...");
+        Dados.Pedido.Apagar(Pedido.getId());
     }
     
     
     private Recurso ObterInformacao(Recurso lRecurso){
         Recurso recursoRetorno = lRecurso;
-        if(!lRecurso.getUrl().startsWith("http://www.pucsp.br/sites/all/themes/puc/js/scripts.js"))
-            return recursoRetorno;
+        Tela.Console.mostrarMensagem("Fazendo request...");
         Solicitacao solicitacao = Comum.Funcao.socketRequest(lRecurso.getUrl());
         
         //============================
@@ -111,13 +118,13 @@ public class Captura {
         int qtdCaracteres = 0;                                   //(?:\/\*(?:[\s\S]*?)\*\/)|(?:([\s;])+\/\/(?:.*)$)
         //====================================
         //Remover todos comentarios do arquivo
+        Tela.Console.mostrarMensagem("Removendo comentarios...");
         String semComentarios = solicitacao.getHtml().replaceAll("/(?:\\/\\*(?:[\\s\\S]*?)\\*\\/)|(?:([\\s;])+\\/\\/(?:.*)$)", ""); //.replaceAll("(?:/\\*(?:[^*]|(?:\\*+[^*/]))*\\*+/)|(?://.*)","");        
         //=================================================
         //Contar tamanho do arquivo e quantidade caracteres
         tamanhoArquivo = solicitacao.getHtml().getBytes().length - semComentarios.getBytes().length;
         qtdCaracteres = solicitacao.getHtml().length() - semComentarios.length();
         //Debug        
-        Tela.Console.mostrarMensagem(semComentarios);
         Tela.Console.mostrarMensagem("qtdCaracteres = " + qtdCaracteres + " Num kbs = " + tamanhoArquivo/1024);
         return recursoRetorno;
     }

@@ -1,17 +1,17 @@
 TODO
     .Caso href='' e href=""    
-    .Integrar Java <-> PHP
-        Listar arquivos
-        Salvar Resultado
-        
     .Whitelist Url (.html, .php, .aspx, etc)
     .Verificar comentarios html
-   
+    .Adiconar caminho completo nos recursos
+    
 RESOLVIDOS
     .Sub paginas repetidas 'www.test.com/asd' == 'www.test.com/asd/'
     .Arrumar Tempo Carregamento 
     .Obter informacao Recursos
     .Encontrar Solucoes
+    .Integrar Java <-> PHP
+        Listar arquivos
+        Salvar Resultado
 Possiveis Solucoes
     .Comentario KK
     .Espaco em branco 
