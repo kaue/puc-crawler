@@ -77,8 +77,8 @@ public class Captura {
                             }
                         }
                     }catch (Exception ex){
-                        //Tela.Console.mostrarMensagem("Erro <a:" + strLink);
-                        //ex.printStackTrace();
+                        Tela.Console.mostrarMensagem("Erro <a:" + strLink);
+                        ex.printStackTrace();
                     }
                 };
             }
@@ -101,7 +101,7 @@ public class Captura {
         //=========================
         //Apagar arquivo xml Pedido
         Tela.Console.mostrarMensagem("Deletando arquivo pedido...");
-        Dados.Pedido.Apagar(Pedido.getId());
+        //Dados.Pedido.Apagar(Pedido.getId());
     }
     
     
@@ -124,6 +124,8 @@ public class Captura {
         //Contar tamanho do arquivo e quantidade caracteres
         tamanhoArquivo = solicitacao.getHtml().getBytes().length - semComentarios.getBytes().length;
         qtdCaracteres = solicitacao.getHtml().length() - semComentarios.length();
+        recursoRetorno.setDiferencaTamanho(tamanhoArquivo);
+        recursoRetorno.setQuantidadeCaracteres(qtdCaracteres);
         //Debug        
         Tela.Console.mostrarMensagem("qtdCaracteres = " + qtdCaracteres + " Num kbs = " + tamanhoArquivo/1024);
         return recursoRetorno;
@@ -132,6 +134,10 @@ public class Captura {
     
     private void ObterRecursos(Solicitacao lSolicitacao, Pagina lPagina){
         Solicitacao solicitacao = lSolicitacao;
+        URI paginaUrl = null;
+        try{paginaUrl = new URI(lPagina.getUrl());}catch(Exception ex){
+            return;
+        }
         //==================================
         //Obter <script src="URL"> </script>
         for (String strScript : solicitacao.getHtml().split(Pattern.quote("<script")))
@@ -141,6 +147,7 @@ public class Captura {
                 if(strScript.contains("src=")){
                     strScript = strScript.split(Pattern.quote("src=\""))[1];
                     strScript = strScript.split(Pattern.quote("\""))[0];
+                    strScript = Url.Estruturar(strScript, paginaUrl);
                     Recurso recurso = new Recurso(strScript, "Script", lPagina);
                     if(!ListaRecursos.contains(recurso)){
                         //==========================================
@@ -165,6 +172,7 @@ public class Captura {
                 if(strLink.contains("href=")){
                     strLink = strLink.split(Pattern.quote("href=\""))[1];
                     strLink = strLink.split(Pattern.quote("\""))[0];
+                    strLink = Url.Estruturar(strLink, paginaUrl);
                     //===========================
                     //Filtrar apenas arquivos CSS
                     if(!strLink.contains(".css"))
@@ -191,6 +199,7 @@ public class Captura {
                 if(strStyle.contains("src=")){
                     strStyle = strStyle.split(Pattern.quote("src=\""))[1];
                     strStyle = strStyle.split(Pattern.quote("\""))[0];
+                    strStyle = Url.Estruturar(strStyle, paginaUrl);
                     //===========================
                     //Filtrar apenas arquivos CSS
                     if(!strStyle.contains(".css"))

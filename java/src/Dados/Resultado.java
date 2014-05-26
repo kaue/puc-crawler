@@ -49,11 +49,11 @@ public class Resultado {
         resultadoXml += "<data>\n";
         //========================================
         //Preencher informações do Pedido '<info>'
-        resultadoXml += "<info>\n";
-        resultadoXml += GerarLinhaXml("id", Pedido.getId());
-        resultadoXml += GerarLinhaXml("dominio", Pedido.getDominio());
-        resultadoXml += GerarLinhaXml("nivel", String.valueOf(Pedido.getNivel()));
-        resultadoXml += "</info>\n";
+        resultadoXml += "\t" + "<info>\n";
+        resultadoXml += "\t\t" + GerarLinhaXml("id", Pedido.getId());
+        resultadoXml += "\t\t" + GerarLinhaXml("dominio", Pedido.getDominio());
+        resultadoXml += "\t\t" + GerarLinhaXml("nivel", String.valueOf(Pedido.getNivel()));
+        resultadoXml += "\t" + "</info>\n";
         //================================================
         //Preencher informações do Resultado '<resultado>'
         resultadoXml += "<resultado>\n";
@@ -61,34 +61,34 @@ public class Resultado {
         //Adicionar lista de Paginas
         resultadoXml += "<paginas>\n";  
         for (Pagina pagina : ListaPaginas) {
-            resultadoXml += "<pagina>\n";
-            resultadoXml += GerarLinhaXml("url", pagina.getUrl());
-            resultadoXml += GerarLinhaXml("tempo", String.valueOf(pagina.getTempoCarregamento()));
-            resultadoXml += "</pagina>\n";
+            resultadoXml += "\t" + "<pagina>\n";
+            resultadoXml += "\t\t" + GerarLinhaXml("url", pagina.getUrl());
+            resultadoXml += "\t\t" + GerarLinhaXml("tempo", String.valueOf(pagina.getTempoCarregamento()));
+            resultadoXml += "\t" + "</pagina>\n";
         }
         resultadoXml += "</paginas>";
         //===========================
         //Adicionar lista de Recursos
         resultadoXml += "<recursos>\n";
         for (Recurso recurso : ListaRecursos) {
-            resultadoXml += "<recurso>\n";
-            resultadoXml += GerarLinhaXml("url", recurso.getUrl());
-            resultadoXml += GerarLinhaXml("tipo", recurso.getTipo());
-            resultadoXml += GerarLinhaXml("tempo", String.valueOf(recurso.getTempoCarregamento()));
-            resultadoXml += GerarLinhaXml("caracteres", String.valueOf(recurso.getQuantidadeCaracteres()));
-            resultadoXml += GerarLinhaXml("tamanho", String.valueOf(recurso.getDiferencaTamanho()));
-            resultadoXml += "</recurso>\n";
+            resultadoXml += "\t" + "<recurso>\n";
+            resultadoXml += "\t\t" + GerarLinhaXml("url", recurso.getUrl());
+            resultadoXml += "\t\t" + GerarLinhaXml("tipo", recurso.getTipo());
+            resultadoXml += "\t\t" + GerarLinhaXml("tempo", String.valueOf(recurso.getTempoCarregamento()));
+            resultadoXml += "\t\t" + GerarLinhaXml("caracteres", String.valueOf(recurso.getQuantidadeCaracteres()));
+            resultadoXml += "\t\t" + GerarLinhaXml("tamanho", String.valueOf(recurso.getDiferencaTamanho()));
+            resultadoXml += "\t" + "</recurso>\n";
             totalCaracteres += recurso.getQuantidadeCaracteres();
             totalTamanho += recurso.getDiferencaTamanho();
         }
         resultadoXml += "</recursos>\n";
         //Adicionar informações resultado
-        resultadoXml += "<info>\n";
-        resultadoXml += GerarLinhaXml("qtdPaginas", String.valueOf(ListaPaginas.size()));
-        resultadoXml += GerarLinhaXml("qtdRecursos", String.valueOf(ListaRecursos.size()));
-        resultadoXml += GerarLinhaXml("totalCaracteres", String.valueOf(totalCaracteres));
-        resultadoXml += GerarLinhaXml("totalTamanho", String.valueOf(totalTamanho));
-        resultadoXml += "</info>\n";
+        resultadoXml += "\t" + "<info>\n";
+        resultadoXml += "\t\t" + GerarLinhaXml("qtdPaginas", String.valueOf(ListaPaginas.size()));
+        resultadoXml += "\t\t" + GerarLinhaXml("qtdRecursos", String.valueOf(ListaRecursos.size()));
+        resultadoXml += "\t\t" + GerarLinhaXml("totalCaracteres", String.valueOf(totalCaracteres));
+        resultadoXml += "\t\t" + GerarLinhaXml("totalTamanho", String.valueOf(totalTamanho));
+        resultadoXml += "\t" + "</info>\n";
         resultadoXml += "</resultado>\n";
         resultadoXml += "</data>\n";
             
