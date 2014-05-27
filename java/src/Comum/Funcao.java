@@ -34,13 +34,26 @@ public class Funcao {
             }
             rd.close();
         } catch (IOException e) {
-            e.printStackTrace();
+            //e.printStackTrace();
         }
         return result;
     }
     
     
     public static Solicitacao socketRequest(String lUrl){
+        //==================================================================================
+        //Socket esta apresentando problema em alguns dominios, utilizando HttpURLConnection
+        long startTime2 = System.nanoTime();
+        String result2 = obterHTML(lUrl);
+        long endTime2 = System.nanoTime();
+        long duration2 = endTime2 - startTime2;
+        
+        duration2 = TimeUnit.SECONDS.convert(duration2, TimeUnit.NANOSECONDS);
+        if(true)
+            return new Solicitacao(result2, duration2);
+        
+        //=============
+        //METODO ANTIGO
         String requestUrl = "";
         String requestDomain = "";
         String requestPath = "";
@@ -58,17 +71,24 @@ public class Funcao {
             Socket socket = new Socket(InetAddress.getByName(requestDomain).getHostAddress(), 80);
             BufferedWriter wr = new BufferedWriter(new OutputStreamWriter(socket.getOutputStream(), "UTF8"));
             //Method
+             
+            if(requestPath == "")
+                requestPath = "/";
+            
             wr.write("GET " + requestPath + " HTTP/1.1\r\n");
-            //Post Data
-            //wr.write("Content-Length: " + data.length() + "\r\n");
-            //Host
             wr.write("Host: " + requestDomain + "\r\n");
-            wr.write("Content-Type: application/x-www-form-urlencoded\r\n");
+            wr.write("Connection: keep-alive\r\n");
+           // wr.write("Cache-Control: no-cache\r\n");
+            //wr.write("Pragma: no-cache\r\n");
+            //wr.write("Content-Type: application/x-www-form-urlencoded\r\n");
             wr.write("Accept: text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8\r\n");
+           // wr.write("User-Agent: Mozilla/5.0 (Windows NT 6.1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/35.0.1916.114 Safari/537.36\r\n");
+            wr.write("Accept-Encoding: gzip,deflate,sdch\r\n");
+            wr.write("Accept-Language: pt-BR,pt;q=0.8,en-US;q=0.6,en;q=0.4\r\n");
             wr.write("\r\n");
             //wr.write(data);
             wr.flush();
-
+            
             BufferedReader rd = new BufferedReader(new InputStreamReader(socket.getInputStream()));
 
             String line;
@@ -80,7 +100,7 @@ public class Funcao {
         } catch (IOException e) {
             e.printStackTrace();
         }
-        //String data = URLEncoder.encode("key1", "UTF-8") + "=" + URLEncoder.encode("value1", "UTF-8");
+       
         
         long endTime = System.nanoTime();
         long duration = endTime - startTime;

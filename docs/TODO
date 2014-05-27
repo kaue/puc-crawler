@@ -2,9 +2,9 @@ TODO
     .Caso href='' e href=""    
     .Whitelist Url (.html, .php, .aspx, etc)
     .Verificar comentarios html
-    .Adiconar caminho completo nos recursos
-    
+    .Verificar comentarios css
 RESOLVIDOS
+    .Adiconar caminho completo nos recursos
     .Sub paginas repetidas 'www.test.com/asd' == 'www.test.com/asd/'
     .Arrumar Tempo Carregamento 
     .Obter informacao Recursos

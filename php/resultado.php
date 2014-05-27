@@ -49,7 +49,10 @@
     }
     //Mostrar resultado
     function mostrarResultado($lCaminhoArquivo){
-        $xmlResultado = simplexml_load_file($lCaminhoArquivo);
+        
+        $xmlResultado = file_get_contents($lCaminhoArquivo, FALSE);
+        $xmlResultado=preg_replace('/&(?!#?[a-z0-9]+;)/', '&amp;', $xmlResultado);
+        $xmlResultado = simplexml_load_string($xmlResultado);
         $urlPrincipal = $xmlResultado->info->dominio;
         if($xmlResultado->resultado->info->qtdPaginas == 0){
             echo '<div class="header alt vert">';
@@ -118,7 +121,7 @@
                 <div class="featurette-item">
                   <i class="icon-hdd"></i>
                   <h4>Tamanho</h4>
-                  <p>Foi possivel diminuir ' . $xmlResultado->resultado->info->totalTamanho . 'kbs dos recursos.</p>
+                  <p>Foi possivel diminuir ' . HumanReadableFilesize($xmlResultado->resultado->info->totalTamanho) . ' dos recursos.</p>
                 </div>
               </div>';
         echo '</div>';
@@ -143,7 +146,10 @@
         foreach ($xmlResultado->resultado->paginas->pagina as $pagina) {
            echo '<tr>';
            echo '<td data-th="Url">' . str_replace($urlPrincipal, "",$pagina->url) . '</td>';
-           echo '<td data-th="Tempo">' . $pagina->tempo . 's</td>';
+           $tempo = $pagina->tempo . 's';
+               if($tempo == "0s")
+                    $tempo = '<' . $tempo;
+           echo '<td data-th="Tempo">' . $tempo . '</td>';
            echo '</tr>';
         }
         echo '</table>';
@@ -155,17 +161,35 @@
         echo '<tr><th>Url</th>       <th>Tipo</th>      <th>Tempo</th>         <th>Caracteres</th>          <th>Tamanho</th></tr>';
         foreach ($xmlResultado->resultado->recursos->recurso as $recurso) {
            echo '<tr>';
-           echo '<td data-th="Url">' . str_replace($urlPrincipal, "",$recurso->url) . '</td>';
+           //$url = strrpos($urlPrincipal, "/");
+            $pi = pathinfo($recurso->url);
+           echo '<td data-th="Url">' . '<a href="' . $recurso->url . '">' . $pi['filename'] . '.' . $pi['extension'] . '</a>' . '</td>';
            echo '<td data-th="Tipo">' . $recurso->tipo . '</td>';
-           echo '<td data-th="Tempo">' . $recurso->tempo . 's</td>';
+            $tempo = $recurso->tempo . 's';
+               if($tempo == "0s")
+                    $tempo = '<' . $tempo;
+           echo '<td data-th="Tempo">' . $tempo . '</td>';
            echo '<td data-th="Caracteres">' . $recurso->caracteres . '</td>';
-           echo '<td data-th="Tamanho">' . $recurso->tamanho . 'kb</td>';
+           echo '<td data-th="Tamanho">' . HumanReadableFilesize($recurso->tamanho) . '</td>';
            echo '</tr>';
         }
         echo '</table>';
         echo '</div>';
         echo '</div>';
         echo '</div>';
+    }
+
+    function HumanReadableFilesize($size) {
+        // Adapted from: http://www.php.net/manual/en/function.filesize.php
+
+        $mod = 1024;
+
+        $units = explode(' ','B KB MB GB TB PB');
+        for ($i = 0; $size > $mod; $i++) {
+            $size /= $mod;
+        }
+
+        return round($size, 2) . ' ' . $units[$i];
     }
     ?> 
 

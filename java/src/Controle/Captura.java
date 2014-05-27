@@ -40,8 +40,11 @@ public class Captura {
                 listaSubPaginasAux.add(new Pagina(Pedido.getDominio()));
             //========================================
             //Obter os links/subPaginas das SubPaginas
+            int subAtual = 0;
+            
             for (Pagina pagina : listaSubPaginasAux) {
-                Tela.Console.mostrarMensagem("--Pagina Atual = " + pagina.getUrl());
+                subAtual += 1;
+                Tela.Console.mostrarMensagem("[" + subAtual + "/" + listaSubPaginasAux.size() + "]--Pagina Atual = " + pagina.getUrl());
                 Solicitacao solicitacao = Comum.Funcao.socketRequest(pagina.getUrl());
                 Tela.Console.mostrarMensagem("Tempo Carregamneto = " + solicitacao.getTempoCarregamento());
                 //=========================================
@@ -77,8 +80,8 @@ public class Captura {
                             }
                         }
                     }catch (Exception ex){
-                        Tela.Console.mostrarMensagem("Erro <a:" + strLink);
-                        ex.printStackTrace();
+                        //Tela.Console.mostrarMensagem("Erro <a:" + strLink);
+                        //ex.printStackTrace();
                     }
                 };
             }
@@ -101,7 +104,7 @@ public class Captura {
         //=========================
         //Apagar arquivo xml Pedido
         Tela.Console.mostrarMensagem("Deletando arquivo pedido...");
-        //Dados.Pedido.Apagar(Pedido.getId());
+        Dados.Pedido.Apagar(Pedido.getId());
     }
     
     
@@ -160,7 +163,7 @@ public class Captura {
                     //Script Direto (sem url/src)
                 }
             }catch (Exception ex){
-                Tela.Console.mostrarMensagem("Erro <script:" + strScript);
+                //Tela.Console.mostrarMensagem("Erro <script:" + strScript);
             }
         };
         //========================================================================
@@ -187,7 +190,7 @@ public class Captura {
                     }
                 }
             }catch (Exception ex){
-                Tela.Console.mostrarMensagem("Erro <link:" + strLink);
+                //Tela.Console.mostrarMensagem("Erro <link:" + strLink);
             }
         };
         //==============================================
@@ -210,13 +213,13 @@ public class Captura {
                         //Adicionar a lista de recursos e obter info
                         ObterInformacao(recurso);
                         ListaRecursos.add(recurso);
-                        Tela.Console.mostrarMensagem("Style= " +strStyle);
+                        //Tela.Console.mostrarMensagem("Style= " +strStyle);
                     }
                 }else{
                     //Style Direto (sem url/src)
                 }
             }catch (Exception ex){
-                Tela.Console.mostrarMensagem("Erro <style:" + strStyle);
+                //Tela.Console.mostrarMensagem("Erro <style:" + strStyle);
             }
         };
         
