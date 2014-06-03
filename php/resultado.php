@@ -203,7 +203,7 @@
       </div>
       <div class="col-md-7">
         <h1 class="pull-right">Projeto PUC-SP</h1>
-        <p class="lead pull-right">Desenvolvido por: Kauê Gimenes, Flávio Tada, Alan Pereira</p>
+        <p class="lead pull-right">Desenvolvido por: Kauê Gimenes, Flávio Tada, Alan Pereira, Felipe Vedovato dos Santos e Andre Sena</p>
       </div>
     </div>
   </div>

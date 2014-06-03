@@ -1,6 +1,7 @@
-TODO
+TODO 
     .Caso href='' e href=""    
     .Whitelist Url (.html, .php, .aspx, etc)
+        nao aceitar .png .jpg .pdf
     .Verificar comentarios html
     .Verificar comentarios css
 RESOLVIDOS
@@ -28,5 +29,4 @@ Possiveis Solucoes
 //SCRIPT DIRECT
 *<script type="text/javascript"></script>
 *<script></script>
-
 
